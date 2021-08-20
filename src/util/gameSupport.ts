@@ -17,13 +17,63 @@ const gameSupport: {[id: string]: IniFileList} = {
             path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim Special Edition', 'SkyrimCustom.ini')
         ]
     },
-    "fallout4" : {
+    "skyrimVR" : {
         filePaths: [
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4', 'Fallout4.ini'),
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4', 'Fallout4Prefs.ini'),
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4', 'Fallout4Custom.ini')
+            path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim VR', 'Skyrim.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim VR', 'SkyrimVR.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim VR', 'SkyrimPrefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Skyrim VR', 'SkyrimCustom.ini')
         ]
     },
+    "fallout4" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4', 'Fallout4.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4', 'Fallout4Prefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4', 'Fallout4Custom.ini')
+        ]
+    },
+    "fallout4vr" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4VR', 'Fallout4.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4VR', 'Fallout4Prefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4VR', 'Fallout4Custom.ini')
+        ]
+    },
+    "falloutnv" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'FalloutNV', 'Fallout.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'FalloutNV', 'FalloutPrefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'FalloutNV', 'FalloutCustom.ini'),
+        ]
+    },
+    "fallout3" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout3', 'Fallout.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout3', 'FalloutPrefs.ini'),
+        ]
+    },
+    "oblivion" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Oblivion', 'Oblivion.ini'),
+        ]
+    },
+    "enderal" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Enderal', 'Enderal.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Enderal', 'EnderalPrefs.ini'),
+        ]
+    },
+    "enderalspecialedition" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Enderal', 'Enderal.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Enderal', 'EnderalPrefs.ini'),
+        ]
+    },
+    "morrowind" : {
+        filePaths: [
+            path.join('{gamepath}', 'Morrowind.ini')
+        ]
+    }
 }
 
 const xboxGamePassSupport: {[id: string]: IniFileList} = {
@@ -36,9 +86,9 @@ const xboxGamePassSupport: {[id: string]: IniFileList} = {
     },
     "fallout4" : {
         filePaths: [
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4 MS', 'Fallout4.ini'),
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4 MS', 'Fallout4Prefs.ini'),
-            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout 4 MS', 'Fallout4Custom.ini')
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS', 'Fallout4.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS', 'Fallout4Prefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Fallout4 MS', 'Fallout4Custom.ini')
         ]
     },
 }
@@ -51,7 +101,10 @@ function getGameInis(gameId: string, state: types.IState): IniFileList {
     const ini: (context: types.IState) => IniFileList = util.getSafe(game, ['iniFiles'], undefined);
     let iniFiles: IniFileList = ini ? ini(state) : gameSupport[gameId];
 
-    if (discovery?.path && isXboxPath(discovery.path)) iniFiles = xboxGamePassSupport[gameId];
+    if (discovery?.path && isXboxPath(discovery.path)) iniFiles = xboxGamePassSupport[gameId] || iniFiles;
+
+    // If the gamepath is being referenced, replace it with the proper location. 
+    if (!!iniFiles) iniFiles.filePaths = iniFiles.filePaths.map(path => path.replace('{gamepath}', discovery.path));
 
     return iniFiles;
 
