@@ -104,7 +104,7 @@ class IniEditor extends ComponentEx<IProps, IIniEditorState> {
         return (
             <Modal id='ini-editor' show={visible} onHide={nop}>
                 <Modal.Header>
-                    <h3>{game.name} - {t('INI Editor')}</h3>
+                    <h3>{t('{{game}} - INI Editor', { replace: { game: game?.name || '???' } })}</h3>
                 </Modal.Header>
                 <Modal.Body>
                     {visible ? this.renderBody(bodyState) : null}
