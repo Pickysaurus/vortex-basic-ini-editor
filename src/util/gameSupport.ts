@@ -73,6 +73,12 @@ const gameSupport: {[id: string]: IniFileList} = {
         filePaths: [
             path.join('{gamepath}', 'Morrowind.ini')
         ]
+    },
+    "starfield" : {
+        filePaths: [
+            path.join(util.getVortexPath('documents'), 'My Games', 'Starfield', 'StarfieldPrefs.ini'),
+            path.join(util.getVortexPath('documents'), 'My Games', 'Starfield', 'StarfieldCustom.ini'),
+        ]
     }
 }
 
